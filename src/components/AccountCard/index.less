@@ -1,0 +1,57 @@
+.card {
+  display: flex;
+  width: 330px;
+  height: 195px;
+  margin: 18px auto 0;
+  background: url("/Artboard.png") no-repeat 100%;
+  background-color: #fff;
+  border-top: 8px solid #EE403B;
+  border-radius: 6px;
+
+  .avatar {
+    margin: 17px 13px 0 22px;
+    border: 1px solid #F5F5F5;
+  }
+
+  .content {
+    flex: 1;
+    padding-top: 17px;
+    padding-right: 10px;
+
+    .nameWrap {
+      display: flex;
+      justify-content: space-between;
+
+      span {
+        font-size: 15px;
+        font-family: PingFangSC-Regular, PingFang SC;
+        font-weight: 400;
+        color: rgba(58, 58, 58, 1);
+      }
+
+      .actived {
+        width: 40px;
+        height: 20px;
+        color: #fff;
+        font-weight: 400;
+        font-size: 12px;
+        font-family: PingFangSC-Regular, PingFang SC;
+        background-color: #EE403B;
+        border-radius: 2px;
+        text-align: center;
+        line-height: 20px;
+      }
+    }
+
+    .auth, .lastTime {
+      color: #9B9B9B;
+      font-size: 14px;
+    }
+    .footer {
+      display: flex;
+      padding-left: 10px;
+      justify-content: space-between;
+      margin-top: 40px;
+    }
+  }
+}
