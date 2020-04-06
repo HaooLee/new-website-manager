@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import { Input, Button,Switch,message } from 'antd';
-import { getNewsDetail,updateNewsDetail } from '@/services/news'
+import { Input, Button, Switch, message } from 'antd';
+import { createNews } from '@/services/news'
 import styles from './index.less'
 import 'braft-editor/dist/index.css'
 import BraftEditor from 'braft-editor'
@@ -15,31 +15,11 @@ export default class NewsEdit extends React.Component {
     title:'',
     source:'',
     desc:'',
-    is_release: 0
+    is_release: 1
   }
 
   componentDidMount () {
-    // console.log()
-    if(this.props.location.query.nid){
-      this.getNewsDetail(this.props.location.query.nid)
-    }
-  }
 
-  getNewsDetail(nid){
-    return getNewsDetail(nid).then(({data, code, msg})=>{
-      if(code === '200'){
-        this.setState({
-          editorState: BraftEditor.createEditorState(data.content),
-          title:data.news_title,
-          source:data.news_source,
-          desc:data.news_des,
-          is_release:data.is_release
-        })
-      }else {
-        message.info(msg)
-      }
-
-    })
   }
 
   componentWillUnmount () {
@@ -47,11 +27,15 @@ export default class NewsEdit extends React.Component {
   }
 
   saveNews(params){
-    return updateNewsDetail(params)
+    return createNews(params)
   }
 
   handleSaveClick = () =>{
-    const {title, source,desc, is_release, outputHTML} = this.state
+    const {title, source, desc, is_release, outputHTML} = this.state
+    if(!title){
+      message.error('请填写新闻标题')
+      return
+    }
     this.saveNews({
       nid:this.props.location.query.nid,
       news_title:title,
@@ -59,14 +43,14 @@ export default class NewsEdit extends React.Component {
       news_source:source,
       is_release,
       content:outputHTML
-    }).then(({code,msg})=>{
-      if(code === '200'){
-        message.info('修改成功')
-      }else {
-        message.info(msg)
-      }
+    }).then(({code})=>{
+     if(code === '200'){
+       message.info('新建成功')
+       router.push({
+         pathname:'/news/list'
+       })
+     }
     })
-    // console.log(title, source, release, outputHTML)
 
   }
 
@@ -89,7 +73,6 @@ export default class NewsEdit extends React.Component {
   }
 
   handleReleaseChange =(checked) =>{
-    // console.log(checked)
       this.setState({
         is_release:checked?1:0
       })
@@ -97,20 +80,20 @@ export default class NewsEdit extends React.Component {
 
   handleChange = (editorState) => {
     this.setState({
-      editorState,
+      editorState: editorState,
       outputHTML: editorState.toHTML()
     })
   }
 
-  setEditorContentAsync = () => {
-    this.isLivinig && this.setState({
-      editorState: BraftEditor.createEditorState('')
-    })
-  }
+  // setEditorContentAsync = () => {
+  //   this.isLivinig && this.setState({
+  //     editorState: BraftEditor.createEditorState('')
+  //   })
+  // }
 
   render () {
 
-    const { editorState,title,source,desc,is_release } = this.state
+    const { editorState,title,source,desc } = this.state
 
     return (
       <PageHeaderWrapper>
@@ -120,7 +103,7 @@ export default class NewsEdit extends React.Component {
           </Button>
           <div style={{padding:'10px 0'}}>
             <span>是否发布:</span>
-            <Switch style={{marginLeft:20}} onChange={this.handleReleaseChange} defaultChecked={!!is_release} />
+            <Switch style={{marginLeft:20}} onChange={this.handleReleaseChange} defaultChecked />
           </div>
           <Input size="large" value={title} onChange={this.handleTitleChange} placeholder="文章标题" style={{marginBottom:10}}/>
           <Input value={desc} onChange={this.handleDescChange} placeholder="文章描述" style={{marginBottom:10}}/>

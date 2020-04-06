@@ -94,21 +94,21 @@ export default {
               path: '/',
               redirect: '/menu/config',
             },
-            {
-              path: '/menu',
-              name: '菜单配置',
-              icon: 'swap',
-              authority: ['超级管理员', '管理员', '普通用户'],
-              routes:[
-                {
-                  path: 'config',
-                  name: '菜单配置',
-                  icon: 'swap',
-                  component: '../pages/menu/config',
-                  authority: ['超级管理员', '管理员', '普通用户'],
-                },
-              ]
-            },
+            // {
+            //   path: '/menu',
+            //   name: '菜单配置',
+            //   icon: 'swap',
+            //   authority: ['超级管理员', '管理员', '普通用户'],
+            //   routes:[
+            //     {
+            //       path: 'config',
+            //       name: '菜单配置',
+            //       icon: 'swap',
+            //       component: '../pages/menu/config',
+            //       authority: ['超级管理员', '管理员', '普通用户'],
+            //     },
+            //   ]
+            // },
             {
               path: '/news',
               name: '新闻发布',
@@ -123,16 +123,24 @@ export default {
                   authority: ['超级管理员', '管理员', '普通用户'],
                 },
                 {
+                  path: 'add',
+                  name: '新建新闻',
+                  icon: 'swap',
+                  component: '../pages/news/add',
+                  authority: ['超级管理员', '管理员', '普通用户'],
+                },
+                {
                   path: 'edit',
                   name: '新闻编辑',
                   icon: 'swap',
                   component: '../pages/news/edit',
                   authority: ['超级管理员', '管理员', '普通用户'],
+                  hideInMenu:true
                 },
               ]
             },
             {
-              path: '/job',
+              path: '/recruit',
               name: '招聘发布',
               icon: 'swap',
               authority: ['超级管理员', '管理员', '普通用户'],
@@ -141,14 +149,22 @@ export default {
                   path: 'list',
                   name: '招聘列表',
                   icon: 'swap',
-                  component: '../pages/job/list',
+                  component: '../pages/recruit/list',
                   authority: ['超级管理员', '管理员', '普通用户'],
                 },
                 {
                   path: 'add',
                   name: '新增招聘',
                   icon: 'swap',
-                  component: '../pages/job/add',
+                  component: '../pages/recruit/add',
+                  authority: ['超级管理员', '管理员', '普通用户'],
+                },
+                {
+                  path: 'edit',
+                  name: '招聘编辑',
+                  icon: 'swap',
+                  component: '../pages/recruit/edit',
+                  hideInMenu:true,
                   authority: ['超级管理员', '管理员', '普通用户'],
                 },
               ]
@@ -210,18 +226,13 @@ export default {
     basePath: '/',
   }, // chainWebpack: webpackPlugin,
   proxy: {
-    '/user': {
-      target: 'http://u.bjdglt.com/index.php',
+    '/news': {
+      target: 'http://php.bjdglt.com:8091/V1.4',
       changeOrigin: true,
       // pathRewrite: { '^/': '' },
     },
-    '/conf': {
-      target: 'http://u.bjdglt.com/index.php',
-      changeOrigin: true,
-      // pathRewrite: { '^/': '' },
-    },
-    '/report': {
-      target: 'http://u.bjdglt.com/index.php',
+    '/recruit': {
+      target: 'http://php.bjdglt.com:8091/V1.4',
       changeOrigin: true,
       // pathRewrite: { '^/': '' },
     },

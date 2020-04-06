@@ -15,9 +15,9 @@ class SecurityLayout extends React.Component {
     });
     const { dispatch } = this.props;
     console.log('fetch UserInfo')
-    dispatch({
-      type: 'user/fetchUserInfo',
-    })
+    // dispatch({
+    //   type: 'user/fetchUserInfo',
+    // })
   }
 
   render() {

@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import { getConfig, saveConfig } from '@/services/config';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 
 import styles from './index.less'

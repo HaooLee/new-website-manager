@@ -3,7 +3,9 @@ import { getUserInfo, query as queryUsers } from '@/services/user';
 const UserModel = {
   namespace: 'user',
   state: {
-    currentUser: {},
+    currentUser: {
+      name:'lihao'
+    },
     isFirstLogin: false,
     AuthMap: {
       '1': '超级管理员',
@@ -30,12 +32,6 @@ const UserModel = {
     },
   },
   reducers: {
-    changeIsFirstLogin(state, action) {
-      return {
-        ...state,
-        isFirstLogin: action.payload,
-      }
-    },
     saveCurrentUser(state, action) {
       return {
         ...state,

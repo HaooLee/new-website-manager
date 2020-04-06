@@ -1,7 +1,9 @@
 import React, { Component } from 'react'
-import { getNewsList,deleteNews } from '@/services/news';
+import { getNewsList,deleteNews,publishNews } from '@/services/news';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { Table, Button, message, Tag } from 'antd';
+import {PlusOutlined} from '@ant-design/icons'
+import router from 'umi/router';
 
 import styles from './index.less'
 
@@ -12,24 +14,58 @@ export default class NewsList extends Component {
   }
 
   componentDidMount() {
-    this.getNewsList().then((d)=>{
-      this.setState({
-        data:d
-      })
-    })
+    this.getNewsList()
   }
 
   getNewsList(){
-    return getNewsList()
-  }
-
-  handleDeleteClick(nid){
-    console.log(nid)
-    deleteNews(nid).then(() =>{
-      message.info('删除成功');
+    return getNewsList().then(({data,code,msg})=>{
+      if(code === '200'){
+        this.setState({
+          data
+        })
+      }else {
+        message.info(msg)
+      }
     })
   }
 
+  handleDeleteClick(nid){
+    deleteNews(nid).then(() =>{
+     return  this.getNewsList().then(()=>{
+       message.info('删除成功');
+     })
+    })
+  }
+
+  handlePublishClick(nid,is_release){
+    return publishNews({
+      nid,
+      is_release:is_release?1:0
+    }).then(({code, msg})=>{
+      if(code === '200'){
+        return  this.getNewsList()
+      }else {
+        message.info(msg)
+      }
+    }).then(()=>{
+      message.info(`${is_release?'发布':'撤回'}成功`);
+    })
+  }
+
+  handleEditClick(nid){
+    router.push({
+      pathname:'/news/edit',
+      query:{
+        nid
+      }
+    })
+  }
+
+  handleAddClick (){
+    router.push({
+      pathname:'/news/add'
+    })
+  }
 
   onSelectChange = selectedRowKeys => {
     this.setState({ selectedRowKeys });
@@ -47,7 +83,8 @@ export default class NewsList extends Component {
       {
         title: '新闻描述',
         align:'center',
-        dataIndex: 'news_desc',
+        ellipsis: true,
+        dataIndex: 'news_des',
       },
       {
         title: '新闻时间',
@@ -62,7 +99,7 @@ export default class NewsList extends Component {
       {
         title: '最后操作时间',
         align:'center',
-        dataIndex: 'laste_time',
+        dataIndex: 'publish_time',
       },
       {
         title: '状态',
@@ -77,10 +114,9 @@ export default class NewsList extends Component {
         render:({nid,is_release})=>{
           return(
             <div>
-              <Button type="link" onClick={e=>this.handleDeleteClick(nid)}>删除</Button>|
-              <Button type="link" disabled={is_release}>编辑</Button>|
-              <Button type="link" disabled={is_release}>发布</Button>
-
+              <Button type="link" onClick={ () =>this.handleDeleteClick(nid)}>删除</Button>|
+              <Button type="link" onClick={ () =>this.handleEditClick(nid)} disabled={is_release}>编辑</Button>|
+              <Button type="link" danger={is_release} onClick={ () =>this.handlePublishClick(nid,!is_release)}>{is_release?'撤回':'发布'}</Button>
             </div>
           )
         }
@@ -99,8 +135,12 @@ export default class NewsList extends Component {
       <PageHeaderWrapper>
         <div>
           <div style={{ marginBottom: 16 }}>
-            <Button type="error" onClick={this.start} disabled={!hasSelected} loading={loading}>
-              删除
+            <Button type="primary" onClick={this.handleAddClick} icon={<PlusOutlined />}>
+              新建
+            </Button>
+
+            <Button type="primary" danger style={{marginLeft:10}} disabled={!hasSelected} loading={loading}>
+              批量删除
             </Button>
           </div>
           <Table rowSelection={rowSelection} columns={columns} dataSource={data} rowKey={(record) => record}/>

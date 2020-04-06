@@ -1,4 +1,17 @@
 export default {
+  'POST /news/getinfo1/:id':{
+  },
+
+  'POST /news/detail':{
+    "nid": 2,
+    "news_title": "测试2",
+    "news_des": "这也是一个测试",
+    "news_time": "2020-03-03 23:44:55",
+    "creater": "羊羊羊1",
+    "is_release": 0,
+    "news_souce": "测试源2",
+    "content": ""
+  },
   'POST /news/getinfo':function (req, res) {
     res.send([
       {

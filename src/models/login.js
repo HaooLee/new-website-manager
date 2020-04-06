@@ -14,17 +14,18 @@ const Model = {
       * login({ payload }, { call, put, select }) {
         const response = yield call(Login, payload);
         const authMap = yield select(({ user }) => user.AuthMap)
-        console.log(response,'---')
         yield put({
           type: 'changeLoginStatus',
           payload: {
             ...response,
-            currentAuthority: authMap[response.data.groupid],
+            // currentAuthority: authMap[response.data.groupid],
+            currentAuthority: authMap[1],
           },
         }); // Login successfully
-
-        if (response.status === 200) {
-          localStorage.setItem('access_token', response.data.access_token)
+        //暂无登录接口
+       // if (response.status === 200) {
+       //    localStorage.setItem('access_token', response.data.access_token)
+          localStorage.setItem('access_token', "testtesttesttesttesttesttest")
           const urlParams = new URL(window.location.href);
           const params = getPageQuery();
           let { redirect } = params;
@@ -45,10 +46,10 @@ const Model = {
           }
 
           yield put(routerRedux.replace(redirect || '/'));
-        } else {
-          Toast
-            .info(response.msg)
-        }
+        // } else {
+        //   Toast
+        //     .info(response.msg)
+        // }
       },
       * getCaptcha({ payload }, { call }) {
         yield call(getFakeCaptcha, payload);
@@ -73,8 +74,7 @@ const Model = {
       changeLoginStatus(state, { payload }) {
         setAuthority(payload.currentAuthority);
         return {
-          ...state,
-          ret: payload.ret,
+          ...state
         };
       },
     },

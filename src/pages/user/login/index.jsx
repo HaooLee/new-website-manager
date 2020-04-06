@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
-import { Form, Input, Button, Checkbox } from 'antd';
+import { Form, Input, Button } from 'antd';
 import styles from './style.less';
 
 @connect(({ login, loading }) => ({
@@ -14,19 +14,13 @@ class Login extends Component {
     type: 'account',
   };
 
-  handleWillSubmit = e => {
-    e.preventDefault();
-    this.props.form.validateFields((err, values) => {
-      if (!err) {
-        this.handleSubmit(values)
-      } else {
-        // { userName: 'lihao', }
-        // {
-        //   password: 'lihao',
-        // }
-      }
-    });
-  }
+  onFinish = values => {
+    this.handleSubmit(values)
+  };
+
+  onFinishFailed = errorInfo => {
+    console.log('Failed:', errorInfo);
+  };
 
   handleSubmit = (values) => {
     const { type } = this.state;
@@ -40,9 +34,7 @@ class Login extends Component {
     });
   };
 
-
   render() {
-    const { getFieldDecorator } = this.props.form
     const inputStyle = {
       width: 315,
       height: 40,
@@ -51,33 +43,36 @@ class Login extends Component {
     }
     return (
       <div className={styles.main}>
-        <Form onSubmit={this.handleWillSubmit} className="login-form">
-          <Form.Item>
-            {getFieldDecorator('username', {
-              rules: [{
-                required: true,
-                message: '请输入账户名称!',
-              }],
-            })(
+        <Form
+          name="login"
+          onFinish={this.onFinish}
+          onFinishFailed={this.onFinishFailed}
+          scrollToFirstError
+          className="login-form">
+          <Form.Item
+            name="username"
+            rules={[{
+              required: true,
+              message: '请输入账户名称!',
+            }]}
+          >
               <Input
                 placeholder="账户"
                 style={inputStyle}
-              />,
-            )}
+              />
           </Form.Item>
-          <Form.Item>
-            {getFieldDecorator('password', {
-              rules: [{
-                required: true,
-                message: '请输入账户密码',
-              }],
-            })(
+          <Form.Item
+            name="password"
+            rules={[{
+              required: true,
+              message: '请输入账户密码',
+            }]}
+          >
               <Input
                 type="password"
                 placeholder="密码"
                 style={inputStyle}
-              />,
-            )}
+              />
           </Form.Item>
           <Form.Item>
             <Button type="primary" htmlType="submit" className={styles.loginFormButton}>
@@ -90,4 +85,4 @@ class Login extends Component {
   }
 }
 
-export default Form.create({})(Login);
+export default Login;
