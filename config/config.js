@@ -92,7 +92,7 @@ export default {
           routes: [
             {
               path: '/',
-              redirect: '/menu/config',
+              redirect: '/news/list',
             },
             // {
             //   path: '/menu',
@@ -226,15 +226,15 @@ export default {
     basePath: '/',
   }, // chainWebpack: webpackPlugin,
   proxy: {
-    '/news': {
-      target: 'http://php.bjdglt.com:8091/V1.4',
+    '/V1.4': {
+      target: 'http://php.bjdglt.com:8091/',
       changeOrigin: true,
       // pathRewrite: { '^/': '' },
     },
-    '/recruit': {
-      target: 'http://php.bjdglt.com:8091/V1.4',
+    '/storage': {
+      target: 'http://php.bjdglt.com:8091/',
       changeOrigin: true,
       // pathRewrite: { '^/': '' },
-    },
+    }
   },
 };

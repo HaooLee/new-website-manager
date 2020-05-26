@@ -1,13 +1,20 @@
 import request from '@/utils/request';
+import {docCookies} from '@/utils/utils.js';
 
-const token = localStorage.getItem('access_token')
+const token = docCookies.getItem('TestCookie')
+console.log(token)
 
 export async function query() {
   return request('/api/users');
 }
 
 export async function getUserInfo() {
-  return request(`/user/info?access_token=${token}`);
+  return request('/get/userinfo', {
+    method: 'POST',
+    data: {
+      token
+    },
+  });
 }
 
 export async function getUserList() {

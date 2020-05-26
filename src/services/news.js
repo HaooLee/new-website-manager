@@ -1,9 +1,10 @@
 import request from '@/utils/request';
+import {stringify} from 'qs'
+
 
 export async function getNewsList(params) {
-  return request('/news/getinfo', {
-    method: 'POST',
-    data: params,
+  return request(`/news/getinfo?${stringify(params)}`, {
+    method: 'GET',
   });
 }
 

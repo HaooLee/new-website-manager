@@ -10,7 +10,11 @@ import router from 'umi/router';
 export default class NewsList extends Component {
   state={
     data:[],
-    selectedRowKeys:[]
+    selectedRowKeys:[],
+    totalNums:0,
+    limit:5,
+    page:1
+
   }
 
   componentDidMount() {
@@ -18,11 +22,14 @@ export default class NewsList extends Component {
   }
 
 
-  getRecruitList(){
-    return getRecruitList().then(({code, data, msg})=>{
+  getRecruitList(page = 1){
+    const {limit} = this.state
+    return getRecruitList({limit,page}).then(({code, data:{list,totalNums,currentPage}, msg})=>{
       if(code === '200'){
         this.setState({
-          data
+          data:list,
+          totalNums,
+          page:currentPage
         })
       }else {
         message.info(msg)
@@ -65,10 +72,10 @@ export default class NewsList extends Component {
   }
 
   handleDeleteClick(rid){
-    deleteRecruit(rid).then(({code,msg}) =>{
+    deleteRecruit(rid).then(({code,msg}) => {
       if(code === '200'){
         message.info('删除成功');
-        return this.getRecruitList()
+        this.getRecruitList()
       }else {
         message.info(msg)
       }
@@ -84,7 +91,7 @@ export default class NewsList extends Component {
       "5":"职能",
     }
 
-    const { selectedRowKeys,data } = this.state;
+    const { selectedRowKeys,data,totalNums,limit, page } = this.state;
     const columns = [
       {
         title: '职位名称',
@@ -153,7 +160,7 @@ export default class NewsList extends Component {
               批量删除
             </Button>
           </div>
-          <Table rowSelection={rowSelection} columns={columns} dataSource={data} rowKey={(record) => record}/>
+          <Table pagination={{ position: ['bottomCenter'],hideOnSinglePage:true,onChange:this.pageChange,total: totalNums,pageSize:limit,current:page}} rowSelection={rowSelection} columns={columns} dataSource={data} rowKey={(record) => record}/>
         </div>
       </PageHeaderWrapper>
     )

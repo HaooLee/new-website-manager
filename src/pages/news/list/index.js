@@ -10,18 +10,24 @@ import styles from './index.less'
 export default class NewsList extends Component {
   state={
     data:[],
-    selectedRowKeys:[]
+    selectedRowKeys:[],
+    totalNums:0,
+    limit:10,
+    page:1
   }
 
   componentDidMount() {
     this.getNewsList()
   }
 
-  getNewsList(){
-    return getNewsList().then(({data,code,msg})=>{
+  getNewsList(page=1){
+    const {limit} = this.state
+    return getNewsList({page,limit}).then(({data:{list,totalNums,currentPage},code,msg})=>{
       if(code === '200'){
         this.setState({
-          data
+          data:list,
+          totalNums,
+          page:currentPage
         })
       }else {
         message.info(msg)
@@ -30,8 +36,9 @@ export default class NewsList extends Component {
   }
 
   handleDeleteClick(nid){
+
     deleteNews(nid).then(() =>{
-     return  this.getNewsList().then(()=>{
+     return this.getNewsList().then(()=>{
        message.info('删除成功');
      })
     })
@@ -43,7 +50,7 @@ export default class NewsList extends Component {
       is_release:is_release?1:0
     }).then(({code, msg})=>{
       if(code === '200'){
-        return  this.getNewsList()
+        return  this.getNewsList(1)
       }else {
         message.info(msg)
       }
@@ -71,9 +78,12 @@ export default class NewsList extends Component {
     this.setState({ selectedRowKeys });
   };
 
-  render() {
+  pageChange = i =>{
+    this.getNewsList(i)
+  }
 
-    const { loading, selectedRowKeys,data } = this.state;
+  render() {
+    const { loading, selectedRowKeys,data,totalNums ,limit,page} = this.state;
     const columns = [
       {
         title: '新闻标题',
@@ -92,11 +102,6 @@ export default class NewsList extends Component {
         dataIndex: 'news_time',
       },
       {
-        title: '创建人',
-        align:'center',
-        dataIndex: 'creater',
-      },
-      {
         title: '最后操作时间',
         align:'center',
         dataIndex: 'publish_time',
@@ -111,6 +116,7 @@ export default class NewsList extends Component {
       {
         title: '操作',
         align:'center',
+        width:300,
         render:({nid,is_release})=>{
           return(
             <div>
@@ -143,7 +149,7 @@ export default class NewsList extends Component {
               批量删除
             </Button>
           </div>
-          <Table rowSelection={rowSelection} columns={columns} dataSource={data} rowKey={(record) => record}/>
+          <Table pagination={{ position: ['bottomCenter'],hideOnSinglePage:true,onChange:this.pageChange,total: totalNums,pageSize:limit,current:page}} rowSelection={rowSelection} columns={columns} dataSource={data} rowKey={(record) => record}/>
         </div>
       </PageHeaderWrapper>
     )

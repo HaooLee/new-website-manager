@@ -1,9 +1,10 @@
 import { routerRedux } from 'dva/router';
 import { stringify } from 'querystring';
 import { Login, getFakeCaptcha } from '@/services/login';
-import { setAuthority } from '@/utils/authority';
 import { getPageQuery } from '@/utils/utils';
 import { Toast } from 'antd-mobile';
+
+import {docCookies} from '@/utils/utils.js'
 
 const Model = {
     namespace: 'login',
@@ -55,24 +56,34 @@ const Model = {
         yield call(getFakeCaptcha, payload);
       },
 
-      * logout(_, { put }) {
-        const { redirect } = getPageQuery(); // redirect
-        localStorage.removeItem('access_token')
-        if (window.location.pathname !== '/user/login' && !redirect) {
-          yield put(
-            routerRedux.replace({
-              pathname: '/user/login',
-              search: stringify({
-                redirect: window.location.href,
-              }),
-            }),
-          );
-        }
+      * logout(_, { put,call }) {
+        // yield put({
+        //   type: 'changeLoginStatus',
+        //   payload: {
+        //     ...response,
+        //     // currentAuthority: authMap[response.data.groupid],
+        //    // currentAuthority: authMap[1],
+        //   },
+        // });
+        docCookies.removeItem('_ga')
+        window.location.href = '/logout';
+        // const { redirect } = getPageQuery(); // redirect
+        //
+        // if (window.location.pathname !== '/user/login' && !redirect) {
+        //   yield put(
+        //     routerRedux.replace({
+        //       pathname: '/user/login',
+        //       search: stringify({
+        //         redirect: window.location.href,
+        //       }),
+        //     }),
+        //   );
+        // }
       },
     },
     reducers: {
       changeLoginStatus(state, { payload }) {
-        setAuthority(payload.currentAuthority);
+        // setAuthority(payload.currentAuthority);
         return {
           ...state
         };

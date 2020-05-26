@@ -1,9 +1,10 @@
 import request from '@/utils/request';
+import {stringify} from 'qs'
+
 
 export async function getRecruitList(params) {
-  return request('/recruit/getinfo', {
-    method: 'POST',
-    data:{...params}
+  return request(`/recruit/getinfo?${stringify(params)}`, {
+    method: 'GET',
   });
 }
 export async function getRecruitDetail(rid) {

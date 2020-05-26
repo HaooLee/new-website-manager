@@ -57,6 +57,6 @@ const request = extend({
   errorHandler,
   // 默认错误处理
   credentials: 'include', // 默认请求是否带上cookie
-  // prefix: 'http://php.bjdglt.com:8091/V1.2',
+  prefix: '/V1.4',
 });
 export default request;
