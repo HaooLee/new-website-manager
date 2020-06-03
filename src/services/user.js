@@ -1,7 +1,7 @@
 import request from '@/utils/request';
 import {docCookies} from '@/utils/utils.js';
 
-const token = docCookies.getItem('TestCookie')
+const token = docCookies.getItem('TeddyTicket')
 console.log(token)
 
 export async function query() {

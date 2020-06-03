@@ -73,7 +73,7 @@ export default class RecruitEdit extends Component {
             working_place:data.working_place,
             job_cate:data.job_cate,
             duty:data.duty,
-            requier:data.requier
+            require:data.require
           })
         }else {
           message.info(msg)
@@ -85,6 +85,12 @@ export default class RecruitEdit extends Component {
     return updateRecruit({
       rid:this.props.location.query.rid,
       ...values
+    }).then(({code,msg})=>{
+      if(code === '200') {
+        message.success('修改成功')
+      }else{
+        message.success(msg)
+      }
     })
   }
 
@@ -188,7 +194,7 @@ export default class RecruitEdit extends Component {
             <Input.TextArea autoSize={{ minRows: 5 }}/>
           </Form.Item>
           <Form.Item
-            name="requier"
+            name="require"
             label="应职要求"
             rules={[
               { required: true, message: '请输入职位描述' }

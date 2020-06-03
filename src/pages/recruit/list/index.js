@@ -37,6 +37,10 @@ export default class NewsList extends Component {
     })
   }
 
+  pageChange = i =>{
+    this.getRecruitList(i)
+  }
+
   handlePublishClick(rid, is_release){
     return publishRecruit({
       rid,

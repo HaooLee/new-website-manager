@@ -182,7 +182,7 @@ export default class RecruitAdd extends Component {
             <Input.TextArea autoSize={{ minRows: 5 }}/>
           </Form.Item>
           <Form.Item
-            name="requier"
+            name="require"
             label="应职要求"
             rules={[
               { required: true, message: '请输入职位描述' }
