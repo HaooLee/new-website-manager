@@ -1,8 +1,10 @@
 import React, { Component } from 'react'
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import { Input, Button, Switch, message, Upload, Radio } from 'antd';
+import { Input, Button, Switch, message, Upload, Checkbox } from 'antd';
 import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
 import { getNewsDetail,updateNewsDetail } from '@/services/news'
+import { getCategoryList} from '@/services/category'
+
 import styles from './index.less'
 import 'braft-editor/dist/index.css'
 import BraftEditor from 'braft-editor'
@@ -20,28 +22,40 @@ export default class NewsEdit extends React.Component {
     news_cover:'',
     news_type:0,
     is_hot:0,
-    loading:false
+    loading:false,
+    category:[],
+    type:''
   }
 
   componentDidMount () {
     // console.log()
-    if(this.props.location.query.nid){
-      this.getNewsDetail(this.props.location.query.nid)
-    }
+    getCategoryList().then(({code, data, msg})=>{
+      if(code === '200'){
+        this.setState({
+          category:data
+        })
+        if(this.props.location.query.nid){
+          this.getNewsDetail(this.props.location.query.nid)
+        }
+      }else {
+        message.error('获取文章分类失败')
+      }
+    })
+
   }
 
   getNewsDetail(nid){
-    return getNewsDetail(nid).then(({data, code, msg})=>{
+    return getNewsDetail(nid).then(({data:{current}, code, msg})=>{
       if(code === '200'){
         this.setState({
-          editorState: BraftEditor.createEditorState(data.content),
-          title:data.news_title,
-          source:data.news_source,
-          desc:data.news_des,
-          is_release:data.is_release,
-          news_cover:data.news_cover,
-          news_type:data.news_type,
-          is_hot: data.is_hot
+          editorState: BraftEditor.createEditorState(current.content),
+          title:current.news_title,
+          source:current.news_source,
+          desc:current.news_des,
+          is_release:current.is_release,
+          news_cover:current.news_cover,
+          type:current.type,
+          is_hot: current.is_hot
         })
       }else {
         message.info(msg)
@@ -59,13 +73,15 @@ export default class NewsEdit extends React.Component {
   }
 
   handleSaveClick = () =>{
-    const {title, source, desc, is_release, outputHTML,loading,news_cover,news_type,is_hot} = this.state
+    const {title, source, desc, is_release, outputHTML,loading,news_cover,type,is_hot} = this.state
     if(!title){
       message.error('请填写新闻标题')
     }else if(!source){
       message.error('请填写新闻来源')
     }else if(!desc){
       message.error('请填写新闻描述')
+    }else if(!type) {
+      message.error('请选择新闻类型')
     }else if(!news_cover){
       message.error('请填写新闻头图')
     }else if(loading){
@@ -81,7 +97,8 @@ export default class NewsEdit extends React.Component {
         is_release,
         content:outputHTML,
         news_cover,
-        news_type,
+        news_type:0,
+        type,
         is_hot
       }).then(({code,msg})=>{
         if(code === '200'){
@@ -142,7 +159,7 @@ export default class NewsEdit extends React.Component {
 
   handleNewsTypeChange = e =>{
     this.setState({
-      news_type: e.target.value,
+      type: e.join(','),
     });
   }
 
@@ -336,7 +353,7 @@ table {
 
   render () {
 
-    const { editorState,title,source,desc,is_release,news_cover,news_type, is_hot } = this.state
+    const { editorState,title,source,desc,is_release,news_cover,category, type, is_hot } = this.state
 
     const extendControls = [
       {
@@ -362,11 +379,11 @@ table {
           </Button>
           <div style={{padding:'10px 0'}}>
             <span>是否发布:</span>
-            <Switch style={{marginLeft:20}} onChange={this.handleReleaseChange} defaultChecked={!!is_release} />
+            <Switch style={{marginLeft:20}} onChange={this.handleReleaseChange} checked={!!is_release} />
           </div>
           <div style={{padding:'10px 0'}}>
             <span>是否标记热门:</span>
-            <Switch style={{marginLeft:20}} onChange={this.handleHotChange} defaultChecked={!!is_hot} />
+            <Switch style={{marginLeft:20}} onChange={this.handleHotChange} checked={!!is_hot} />
           </div>
           <div>
             <span>新闻头图:</span>
@@ -384,12 +401,8 @@ table {
           </div>
           <div>
             <span>新闻分类:</span>
-            <Radio.Group onChange={this.handleNewsTypeChange} style={{padding:20}} value={news_type}>
-              <Radio value={1}>资讯列表</Radio>
-              <Radio value={2}>专题区</Radio>
-              <Radio value={3}>荣誉</Radio>
-              <Radio value={4}>疫情</Radio>
-            </Radio.Group>
+            <Checkbox.Group style={{margin:10}} defaultValue={type.split(',')} options={category.filter(i=>i.status === 1).map(i=>({label:i.name, value:`${i.id}`}))}   onChange={this.handleNewsTypeChange} />
+
           </div>
           <Input size="large" value={title} onChange={this.handleTitleChange} placeholder="文章标题" style={{marginBottom:10}}/>
           <Input value={desc} onChange={this.handleDescChange} placeholder="文章描述" style={{marginBottom:10}}/>

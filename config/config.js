@@ -94,21 +94,36 @@ export default {
               path: '/',
               redirect: '/news/list',
             },
-            // {
-            //   path: '/menu',
-            //   name: '菜单配置',
-            //   icon: 'swap',
-            //   authority: ['超级管理员', '管理员', '普通用户'],
-            //   routes:[
-            //     {
-            //       path: 'config',
-            //       name: '菜单配置',
-            //       icon: 'swap',
-            //       component: '../pages/menu/config',
-            //       authority: ['超级管理员', '管理员', '普通用户'],
-            //     },
-            //   ]
-            // },
+            {
+              path: '/category',
+              name: '新闻分类',
+              icon: 'swap',
+              authority: ['超级管理员', '管理员', '普通用户'],
+              routes:[
+                {
+                  path: 'list',
+                  name: '分类列表',
+                  icon: 'swap',
+                  component: '../pages/category/list',
+                  authority: ['超级管理员', '管理员', '普通用户'],
+                },
+                {
+                  path: 'add',
+                  name: '添加分类',
+                  icon: 'swap',
+                  component: '../pages/category/add',
+                  authority: ['超级管理员', '管理员', '普通用户'],
+                },
+                {
+                  path: 'edit',
+                  name: '编辑分类',
+                  icon: 'swap',
+                  hideInMenu:true,
+                  component: '../pages/category/edit',
+                  authority: ['超级管理员', '管理员', '普通用户'],
+                },
+              ]
+            },
             {
               path: '/news',
               name: '新闻发布',
@@ -227,12 +242,12 @@ export default {
   }, // chainWebpack: webpackPlugin,
   proxy: {
     '/V1.4': {
-      target: 'http://php.bjdglt.com:8091/',
+      target: 'http://test-bg-td.teddymobile.cn/',
       changeOrigin: true,
       // pathRewrite: { '^/': '' },
     },
     '/storage': {
-      target: 'http://php.bjdglt.com:8091/',
+      target: 'http://test-bg-td.teddymobile.cn/',
       changeOrigin: true,
       // pathRewrite: { '^/': '' },
     }
