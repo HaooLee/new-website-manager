@@ -45,17 +45,17 @@ export default class NewsEdit extends React.Component {
   }
 
   getNewsDetail(nid){
-    return getNewsDetail(nid).then(({data:{current}, code, msg})=>{
+    return getNewsDetail(nid).then(({data, code, msg})=>{
       if(code === '200'){
         this.setState({
-          editorState: BraftEditor.createEditorState(current.content),
-          title:current.news_title,
-          source:current.news_source,
-          desc:current.news_des,
-          is_release:current.is_release,
-          news_cover:current.news_cover,
-          type:current.type,
-          is_hot: current.is_hot
+          editorState: BraftEditor.createEditorState(data.content),
+          title:data.news_title,
+          source:data.news_source,
+          desc:data.news_des,
+          is_release:data.is_release,
+          news_cover:data.news_cover,
+          type:data.type,
+          is_hot: data.is_hot
         })
       }else {
         message.info(msg)
@@ -353,7 +353,7 @@ table {
 
   render () {
 
-    const { editorState,title,source,desc,is_release,news_cover,category, type, is_hot } = this.state
+    const { editorState,title,source,desc,is_release,news_cover,category,type, is_hot } = this.state
 
     const extendControls = [
       {
@@ -401,7 +401,7 @@ table {
           </div>
           <div>
             <span>新闻分类:</span>
-            <Checkbox.Group style={{margin:10}} defaultValue={type.split(',')} options={category.filter(i=>i.status === 1).map(i=>({label:i.name, value:`${i.id}`}))}   onChange={this.handleNewsTypeChange} />
+            <Checkbox.Group style={{margin:10}} value={type.split(',')} options={category.filter(i=>i.status === 1).map(i=>({label:i.name, value:`${i.id}`}))}   onChange={this.handleNewsTypeChange} />
 
           </div>
           <Input size="large" value={title} onChange={this.handleTitleChange} placeholder="文章标题" style={{marginBottom:10}}/>

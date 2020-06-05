@@ -385,7 +385,7 @@ table {
           </div>
           <div>
             <span>新闻分类:</span>
-            <Checkbox.Group style={{margin:10}} defaultValue={type.split(',')} options={category.filter(i=>i.status === 1).map(i=>({label:i.name, value:`${i.id}`}))}   onChange={this.handleNewsTypeChange} />
+            <Checkbox.Group style={{margin:10}} value={type.split(',')} options={category.filter(i=>i.status === 1).map(i=>({label:i.name, value:`${i.id}`}))}   onChange={this.handleNewsTypeChange} />
 
           </div>
           <Input size="large" value={title} onChange={this.handleTitleChange} placeholder="文章标题" style={{marginBottom:10}}/>
